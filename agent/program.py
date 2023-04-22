@@ -18,50 +18,38 @@ class Agent:
         """
         Initialise the agent.
         """
+        # random.seed(0)
+
         self._color = color
-        match color:
-            case PlayerColor.RED:
-                print("Testing: I am playing as red")
-            case PlayerColor.BLUE:
-                print("Testing: I am playing as blue")
-        
-        self._reds = {}
-        self._blues = {}
-        self._empty = set()
 
-        random.seed(0)
+        self._totalPower = 0
 
-        # Add all positions to _empty
-        for r in range(7):
-            for q in range(7):
-                self._empty.add(HexPos(r,q))
+        self._allyCells = {}
+        self._enemyCells = {}
+        self._emptyCells = \
+            set([HexPos(r,q) for r in range(7) for q in range(7)])
 
     def action(self, **referee: dict) -> Action:
         """
         Return the next action to take.
         """
-        # match self._color:
-        #     case PlayerColor.RED:
-        #         if (self._reds): return SpreadAction(HexPos(3, 3), HexDir.Up)
-        #         return SpawnAction(HexPos(3, 3))
-        #     case PlayerColor.BLUE:
-        #         return SpawnAction(HexPos(4, 2))
         return self.randomAction()
     
     def randomAction(self) -> Action:
-        isEmpty = (len(self._reds)==0) if self._color==PlayerColor.RED else (len(self._blues)==0)
-        if isEmpty:
+
+        if self._totalPower >= 49:
+            action = "SPREAD"
+        elif len(self._allyCells) == 0:
             action = "SPAWN"
         else:
             action = random.choice(["SPAWN", "SPREAD"])
 
         match action:
             case "SPAWN":
-                return SpawnAction(random.choice(list(self._empty)))
+                return SpawnAction(random.choice(list(self._emptyCells)))
             case "SPREAD":
-                return SpreadAction(random.choice(list(self._reds.keys()))
-                                    if self._color == PlayerColor.RED else random.choice(list(self._blues.keys())),
-                                    HexDir.DownRight)
+                return SpreadAction(random.choice(list(self._allyCells.keys())),
+                                    random.choice([d for d in HexDir]))
         
 
     def turn(self, color: PlayerColor, action: Action, **referee: dict):
@@ -77,34 +65,28 @@ class Agent:
                 pass
 
     def spawn(self, color: PlayerColor, cell: HexPos):
+        
+        self._totalPower += 1
+        self._emptyCells.remove(cell)
 
-        print(f"Testing: {color} SPAWN at {cell}")
-
-        self._empty.remove(cell)
-
-        match color:
-            case PlayerColor.RED:
-                self._reds[cell] = 1
-            case PlayerColor.BLUE:
-                self._blues[cell] = 1
+        if self._color == color:
+            self._allyCells[cell] = 1
+        else:
+            self._enemyCells[cell] = 1
     
     def spread(self, color: PlayerColor, cell: HexPos, dir: HexDir):
-        print(self._empty)
-        print(f"Testing: {color} SPREAD from {cell}, {dir}")
 
-        match color:
-            case PlayerColor.RED:
-                spreadingCells = self._reds
-                stayingCells = self._blues
-            case PlayerColor.BLUE:
-                spreadingCells = self._blues
-                stayingCells = self._reds
+        if self._color == color:
+            spreadingCells = self._allyCells
+            stayingCells = self._enemyCells
+        else:
+            spreadingCells = self._enemyCells
+            stayingCells = self._allyCells
         
-        # assert(spreadingCells.get(cell))
-
         # Value of cell's power
         k = spreadingCells.pop(cell)
-        self._empty.add(cell)
+        self._emptyCells.add(cell)
+        self._totalPower -= k
 
         # Update the cells in the direction of the SPREAD
         for i in range(1, k+1):
@@ -115,20 +97,25 @@ class Agent:
             if spreadingCells.get(pos):
 
                 if spreadingCells[pos] == 6:
-                    self._empty.add(pos)
+                    self._emptyCells.add(pos)
                     spreadingCells.pop(pos)
+                    self._totalPower -= 6
                 else:
                     spreadingCells[pos] += 1
+                    self._totalPower += 1
 
             elif stayingCells.get(pos):
-
+                
                 val = stayingCells.pop(pos)
                 if val < 6:
                     spreadingCells[pos] = val + 1
+                    self._totalPower += 1
                 else:
-                    self._empty.add(pos)
+                    self._emptyCells.add(pos)
+                    self._totalPower -= 6
 
             else:
 
-                self._empty.remove(pos)
+                self._emptyCells.remove(pos)
                 spreadingCells[pos] = 1
+                self._totalPower += 1
