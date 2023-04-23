@@ -5,8 +5,6 @@ import random
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 
-
-
 # This is the entry point for your game playing agent. Currently the agent
 # simply spawns a token at the centre of the board if playing as RED, and
 # spreads a token at the centre of the board if playing as BLUE. This is
@@ -42,7 +40,7 @@ class Agent:
         elif len(self._allyCells) == 0:
             action = "SPAWN"
         else:
-            action = random.choice(["SPAWN", "SPREAD"])
+            action = random.choices(["SPAWN", "SPREAD"], weights=[1,5], k=1)[0]
 
         match action:
             case "SPAWN":
