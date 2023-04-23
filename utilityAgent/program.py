@@ -78,65 +78,23 @@ class Agent:
 
         if ogPower < 49:
             for cell in ogEmpties:
-                action = SpawnAction(cell)
                 self.spawn(self._color, cell)
-                priority = self.heuristic()
-                node = PQNode(action, priority=priority)
+                node = PQNode(SpawnAction(cell), priority=self.utility())
                 actions.add(node)
                 revert()
         
         for cell in ogAllies:
             for dir in HexDir:
-                action = SpreadAction(cell, dir)
                 self.spread(self._color, cell, dir)
-                priority = self.heuristic()
-                node = PQNode(action, priority=priority)
+                node = PQNode(SpreadAction(cell, dir), priority=self.utility())
                 actions.add(node)
                 revert()
 
         return actions.pop()
 
     
-    def heuristic(self) -> int:
-        # return len(self._enemyCells)/len(self._allyCells)
-        # In each axis, find which lines has enemies
-        EoccupiedR = [0]*7
-        EoccupiedQ = [0]*7
-        EoccupiedP = [0]*7       
-        for pos in self._enemyCells.keys():
-            EoccupiedR[pos.r] = 1
-            EoccupiedQ[pos.q] = 1
-            EoccupiedP[(pos.r+pos.q)%7] = 1
-
-        # In each axis, find which lines has allies
-        AoccupiedR = [0]*7
-        AoccupiedQ = [0]*7
-        AoccupiedP = [0]*7
-        for pos in self._allyCells.keys():
-            AoccupiedR[pos.r] = 1
-            AoccupiedQ[pos.q] = 1
-            AoccupiedP[(pos.r+pos.q)%7] = 1
-
-        Rs = Qs = Ps = 0
-        missingInR = missingInQ = missingInP = 0
-        
-        for i,x in enumerate(EoccupiedR):
-            if x != 0:
-                if not AoccupiedR[i]: missingInR = 1
-                Rs += 1
-
-        for i,x in enumerate(EoccupiedQ):
-            if x != 0:
-                if not AoccupiedQ[i]: missingInQ = 1
-                Qs += 1
-
-        for i,x in enumerate(EoccupiedP):
-            if x != 0:
-                if not AoccupiedP[i]: missingInP = 1
-                Ps += 1
-
-        return min(Rs+missingInR, Qs+missingInQ, Ps+missingInP)
-        
+    def utility(self) -> int:
+        return len(self._enemyCells)/len(self._allyCells)
 
     def turn(self, color: PlayerColor, action: Action, **referee: dict):
         """
