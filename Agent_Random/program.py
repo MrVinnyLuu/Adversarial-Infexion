@@ -23,14 +23,30 @@ class Agent:
 
         self._gameState = GameState()
 
+    def turn(self, color: PlayerColor, action: Action, **referee: dict):
+        """
+        Update the agent with the last player's action.
+        """
+        match action:
+            case SpawnAction(cell):
+                self._gameState.spawn(color, cell)
+                pass
+            case SpreadAction(cell, direction):
+                self._gameState.spread(color, cell, direction)
+                pass
+
     def action(self, **referee: dict) -> Action:
         """
         Return the next action to take.
         """
-        return self.randomAction()
+        return self.randomAction()       
     
     def randomAction(self) -> Action:
 
+        # All equal chance
+        return random.choice(self._gameState.getLegalActions(self._color))
+
+        # SPREAD:SPAWN = 5:1
         if self._gameState.totalPower >= 49:
             action = "SPREAD"
         elif len(self._gameState.getCells(self._color)) == 0:
@@ -45,16 +61,3 @@ class Agent:
                 return SpreadAction(
                     random.choice(list(self._gameState.getCells(self._color).keys())),
                     random.choice([d for d in HexDir]))
-        
-
-    def turn(self, color: PlayerColor, action: Action, **referee: dict):
-        """
-        Update the agent with the last player's action.
-        """
-        match action:
-            case SpawnAction(cell):
-                self._gameState.spawn(color, cell)
-                pass
-            case SpreadAction(cell, direction):
-                self._gameState.spread(color, cell, direction)
-                pass

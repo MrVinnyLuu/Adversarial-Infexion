@@ -1,14 +1,18 @@
 
+from Utilities.PriorityQueue import PriorityQueue, PQNode
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 
 class GameState:
 
-    def __init__(self, totalPower=0, reds={}, blues={}, empties=None) -> None:
+    def __init__(self, totalPower=0, reds={}, blues={},
+                 empties:set=None) -> None:
+        
         self.totalPower = totalPower
         self.reds = reds
         self.blues = blues
-        if empties:
+
+        if empties != None:
             self.empties = empties
         else:
             self.empties = \
@@ -33,6 +37,26 @@ class GameState:
             case PlayerColor.BLUE:
                 return self.blues
     
+    def getLegalActions(self, color: PlayerColor):
+
+        actions = []
+
+        if self.totalPower < 49:
+            for cell in self.empties:
+                actions.append(SpawnAction(cell))
+
+        for cell in self.getCells(color).keys():
+            for dir in HexDir:
+                actions.append(SpreadAction(cell, dir))
+        
+        return actions
+
+    def parseAction(self, color: PlayerColor, action: Action):
+        if "SPAWN" in str(action):
+            self.spawn(color, action.cell)
+        elif "SPREAD" in str(action):
+            self.spread(color, action.cell, action.direction)
+
     def spawn(self, color: PlayerColor, cell: HexPos):
         
         self.totalPower += 1
