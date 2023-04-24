@@ -59,6 +59,8 @@ class Agent:
 
     
     def utility(self) -> int:
-        numAllies = len(self._gameState.getCells(self._color))
-        numEnemies = 49 - len(self._gameState.empties) - numAllies
-        return numEnemies/numAllies
+        powerAllies = sum(self._gameState.getCells(self._color).values())
+        powerEnemies = self._gameState.totalPower - powerAllies
+        numAllies = 0#len(self._gameState.getCells(self._color))
+        numEnemies = 0#49 - len(self._gameState.empties) - numAllies
+        return (numEnemies + powerEnemies)/(numAllies + powerAllies)

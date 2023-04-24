@@ -30,6 +30,9 @@ class GameState:
         self.blues = dict(self.ogBlues)
         self.empties = set(self.ogEmpties)
     
+    def isGameOver(self):
+        return len(self.blues) == 0 or len(self.reds) == 0
+    
     def getCells(self, color: PlayerColor):
         match color:
             case PlayerColor.RED:
