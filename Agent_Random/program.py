@@ -44,7 +44,7 @@ class Agent:
     def randomAction(self) -> Action:
 
         # All equal chance
-        return random.choice(self._gameState.getLegalActions(self._color))
+        return random.choice(self._gameState.getLegalActions())
 
         # SPREAD:SPAWN = 5:1
         if self._gameState.totalPower >= 49:

@@ -18,13 +18,10 @@ class MCTSNode:
 
         self._numVisits = 0
         self._results = defaultdict(int)
-        self._results[1] = 0
-        self._results[-1] = 0
-        self._untriedActions = self.untriedActions()
-
-    def untriedActions(self):
+        self._results[1] = 0 # wins
+        self._results[0] = 0 # ties
+        self._results[-1] = 0 # loses
         self._untriedActions = self.state.getLegalActions()
-        return self._untriedActions
 
     def q(self):
         wins = self._results[1]
@@ -50,17 +47,33 @@ class MCTSNode:
         return self.state.isGameOver()
 
     def rollout(self):
-        curRollout = self.state
+        curRolloutState = self.state
 
         self.state.hold()
 
-        while not curRollout.isGameOver():
+        while not curRolloutState.isGameOver():
 
-            actions = curRollout.getLegalActions(PlayerColor)
+            actions = curRolloutState.getLegalActions()
+            # action = 
 
-            ################
+        return curRolloutState.gameResult()
+    
+    def utilityAction(self) -> Action:
 
-        return curRollout.gameResult()
+        queue = PriorityQueue()
+
+        self.state.hold()
+
+        for action in self.state.getLegalActions():
+            self.state.parseAction(action)
+            node = PQNode(action, priority=self.utility())
+            queue.add(node)
+            self.state.revert()
+        
+        # for x in queue.heap:
+        #     print(x.priority,x.value)
+
+        return queue.pop()
     
     def backpropagate(self, result):
         self._numVisits += 1
@@ -107,7 +120,7 @@ class MCTSNode:
         return self.bestChild()
     
     def main():
-        root = MCTSNode(state = initial)
+        root = MCTSNode(state = GameState())
         selectedNode = root.bestAction()
         return
     

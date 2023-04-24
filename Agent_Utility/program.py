@@ -46,9 +46,9 @@ class Agent:
 
         self._gameState.hold()
 
-        for action in self._gameState.getLegalActions(self._color):
-            self._gameState.parseAction(self._color, action)
-            node = PQNode(action, priority=self.utility())
+        for action in self._gameState.getLegalActions():
+            self._gameState.parseAction(action)
+            node = PQNode(action, priority=self._gameState.utility())
             queue.add(node)
             self._gameState.revert()
         
@@ -56,11 +56,3 @@ class Agent:
         #     print(x.priority,x.value)
 
         return queue.pop()
-
-    
-    def utility(self) -> int:
-        powerAllies = sum(self._gameState.getCells(self._color).values())
-        powerEnemies = self._gameState.totalPower - powerAllies
-        numAllies = 0#len(self._gameState.getCells(self._color))
-        numEnemies = 0#49 - len(self._gameState.empties) - numAllies
-        return (numEnemies + powerEnemies)/(numAllies + powerAllies)
