@@ -17,9 +17,7 @@ class Agent:
         """
         Initialise the agent.
         """
-        
         self._color = color
-
         self._gameState = GameState()
 
     def turn(self, color: PlayerColor, action: Action, **referee: dict):

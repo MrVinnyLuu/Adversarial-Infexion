@@ -8,7 +8,7 @@ from referee.game import \
 
 class MCTSNode:
 
-    def __init__(self, state: GameState, parent:GameState=None,
+    def __init__(self, state: GameState, parent=None,
                  parentAction:Action=None) -> None:
         
         self.state = state
@@ -34,27 +34,25 @@ class MCTSNode:
     def expand(self):
 
         action = self._untriedActions.pop()
-        nextState = GameState(state=self.state)
-        nextState.parseAction(action)
+        childState = GameState(state=self.state)
+        childState.parseAction(action)
 
-        childNode = MCTSNode(nextState, parent=self, parentAction=action)
+        childNode = MCTSNode(childState, parent=self, parentAction=action)
 
         self.children.append(childNode)
 
         return childNode
 
-    def isTerminalNode(self):
-        return self.state.isGameOver()
-
     def rollout(self):
 
         curRolloutState = GameState(state=self.state)
+        color = PlayerColor.RED if (self.state.turnNum-1)%2 == 1 else PlayerColor.BLUE
 
         while not curRolloutState.isGameOver():
             action = curRolloutState.utilityAction()
             curRolloutState.parseAction(action)
 
-        return curRolloutState.gameResult()
+        return curRolloutState.gameResult(color)
 
     def backpropagate(self, result):
         self._numVisits += 1
@@ -79,7 +77,7 @@ class MCTSNode:
 
         cur = self
         
-        while not cur.isTerminalNode():
+        while not cur.state.isGameOver():
             if not cur.isFullyExpanded():
                 return cur.expand()
             else:
@@ -89,7 +87,7 @@ class MCTSNode:
 
     def bestAction(self):
 
-        simulationNum = 100
+        simulationNum = 1000
 
         for _ in range(simulationNum):
 

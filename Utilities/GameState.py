@@ -46,7 +46,7 @@ class GameState:
         return self.turnNum > 2 and (len(self.reds) == 0 or len(self.blues) == 0
                                      or self.turnNum > 343)
     
-    def gameResult(self):
+    def gameResult(self, color):
 
         if len(self.reds) == 0 and len(self.blues) == 0:
             return 0
@@ -56,9 +56,9 @@ class GameState:
                 
         winner = PlayerColor.RED if len(self.reds) > len(self.blues) else PlayerColor.BLUE
 
-        curPlayer = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
+        # curPlayer = PlayerColor.RED if (self.turnNum)%2 == 1 else PlayerColor.BLUE
 
-        return 1 if curPlayer == winner else -1
+        return 1 if color == winner else -1
 
     def getCells(self, color: PlayerColor):
         match color:
