@@ -34,7 +34,7 @@ class MCTSNode:
     def expand(self):
 
         action = self._untriedActions.pop()
-        nextState = GameState(self.state)
+        nextState = GameState(state=self.state)
         nextState.parseAction(action)
 
         childNode = MCTSNode(nextState, parent=self, parentAction=action)
@@ -47,34 +47,15 @@ class MCTSNode:
         return self.state.isGameOver()
 
     def rollout(self):
-        curRolloutState = self.state
 
-        self.state.hold()
+        curRolloutState = GameState(state=self.state)
 
         while not curRolloutState.isGameOver():
-
-            actions = curRolloutState.getLegalActions()
-            # action = 
+            action = curRolloutState.utilityAction()
+            curRolloutState.parseAction(action)
 
         return curRolloutState.gameResult()
-    
-    def utilityAction(self) -> Action:
 
-        queue = PriorityQueue()
-
-        self.state.hold()
-
-        for action in self.state.getLegalActions():
-            self.state.parseAction(action)
-            node = PQNode(action, priority=self.utility())
-            queue.add(node)
-            self.state.revert()
-        
-        # for x in queue.heap:
-        #     print(x.priority,x.value)
-
-        return queue.pop()
-    
     def backpropagate(self, result):
         self._numVisits += 1
         self._results[result] += 1
@@ -97,31 +78,23 @@ class MCTSNode:
     def _treePolicy(self):
 
         cur = self
-
+        
         while not cur.isTerminalNode():
-
             if not cur.isFullyExpanded():
                 return cur.expand()
             else:
                 cur = cur.bestChild()
-        
+
         return cur
 
     def bestAction(self):
 
         simulationNum = 100
 
-        for i in range(simulationNum):
+        for _ in range(simulationNum):
 
             v = self._treePolicy()
             reward = v.rollout()
             v.backpropagate(reward)
         
         return self.bestChild()
-    
-    def main():
-        root = MCTSNode(state = GameState())
-        selectedNode = root.bestAction()
-        return
-    
-    

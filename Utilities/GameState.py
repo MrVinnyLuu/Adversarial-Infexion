@@ -5,9 +5,17 @@ from referee.game import \
 
 class GameState:
 
-    def __init__(self, turnNum = 1, totalPower = 0,
+    def __init__(self, state=None, turnNum = 1, totalPower = 0,
                  reds = {}, blues = {}, empties:set = None) -> None:
         
+        if state:
+            self.turnNum = state.turnNum
+            self.totalPower = state.totalPower
+            self.reds = dict(state.reds)
+            self.blues = dict(state.blues)
+            self.empties = set(state.empties)
+            return
+
         self.turnNum = turnNum
         self.totalPower = totalPower
         self.reds = reds
@@ -35,9 +43,23 @@ class GameState:
         self.empties = set(self.ogEmpties)
     
     def isGameOver(self):
-        return len(self.blues) == 0 or len(self.reds) == 0 \
-               or self.turnNum >= 343
+        return self.turnNum > 2 and (len(self.reds) == 0 or len(self.blues) == 0
+                                     or self.turnNum > 343)
     
+    def gameResult(self):
+
+        if len(self.reds) == 0 and len(self.blues) == 0:
+            return 0
+        elif self.turnNum > 343 and \
+            abs(sum(self.reds.values())-sum(self.blues.values())) < 2:
+            return 0
+                
+        winner = PlayerColor.RED if len(self.reds) > len(self.blues) else PlayerColor.BLUE
+
+        curPlayer = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
+
+        return 1 if curPlayer == winner else -1
+
     def getCells(self, color: PlayerColor):
         match color:
             case PlayerColor.RED:
@@ -67,15 +89,37 @@ class GameState:
         elif "SPREAD" in str(action):
             self.spread(color, action.cell, action.direction)
     
+################################################################################
+    def utilityAction(self) -> Action:
+
+        queue = PriorityQueue()
+
+        self.hold()
+
+        for action in self.getLegalActions():
+            self.parseAction(action)
+            # if self.isGameOver():
+            #     self.revert()
+            #     return action
+            node = PQNode(action, priority=self.utility())
+            queue.add(node)
+            self.revert()
+        
+        # for x in queue.heap:
+        #     print(x.priority,x.value)
+
+        return queue.pop()
+################################################################################
+
     def utility(self) -> int:
 
         color = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
 
         powerAllies = sum(self.getCells(color).values())
         powerEnemies = self.totalPower - powerAllies
-        numAllies = 0#len(self.getCells(color))
-        numEnemies = 0#49 - len(self.state.empties) - numAllies
-        
+        numAllies = 0 #len(self.getCells(color))
+        numEnemies = 0 #49 - len(self.state.empties) - numAllies
+        if powerAllies == 0: return -1
         return (numEnemies + powerEnemies)/(numAllies + powerAllies)
 
     def spawn(self, color: PlayerColor, cell: HexPos):
