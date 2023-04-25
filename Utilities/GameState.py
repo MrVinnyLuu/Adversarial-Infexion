@@ -92,23 +92,20 @@ class GameState:
 ################################################################################
     def utilityAction(self) -> Action:
 
-        queue = PriorityQueue()
+        bestAction = None
+        bestUtility = -1
 
         self.hold()
 
         for action in self.getLegalActions():
             self.parseAction(action)
-            # if self.isGameOver():
-            #     self.revert()
-            #     return action
-            node = PQNode(action, priority=self.utility())
-            queue.add(node)
+            utility = self.utility()
+            if utility < bestUtility or bestUtility == -1:
+                bestUtility = utility
+                bestAction = action
             self.revert()
-        
-        # for x in queue.heap:
-        #     print(x.priority,x.value)
 
-        return queue.pop()
+        return bestAction
 ################################################################################
 
     def utility(self) -> int:
@@ -117,9 +114,11 @@ class GameState:
 
         powerAllies = sum(self.getCells(color).values())
         powerEnemies = self.totalPower - powerAllies
-        numAllies = 0 #len(self.getCells(color))
-        numEnemies = 0 #49 - len(self.state.empties) - numAllies
+        numAllies = len(self.getCells(color))
+        numEnemies = 49 - len(self.empties) - numAllies
+
         if powerAllies == 0: return -1
+        
         return (numEnemies + powerEnemies)/(numAllies + powerAllies)
 
     def spawn(self, color: PlayerColor, cell: HexPos):

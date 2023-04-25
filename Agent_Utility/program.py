@@ -42,17 +42,17 @@ class Agent:
     
     def utilityAction(self) -> Action:
 
-        queue = PriorityQueue()
+        bestAction = None
+        bestUtility = -1
 
         self._gameState.hold()
 
         for action in self._gameState.getLegalActions():
             self._gameState.parseAction(action)
-            node = PQNode(action, priority=self._gameState.utility())
-            queue.add(node)
+            utility = self._gameState.utility()
+            if utility < bestUtility or bestUtility == -1:
+                bestUtility = utility
+                bestAction = action
             self._gameState.revert()
-        
-        # for x in queue.heap:
-        #     print(x.priority,x.value)
 
-        return queue.pop()
+        return bestAction
