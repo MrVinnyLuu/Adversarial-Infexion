@@ -27,7 +27,7 @@ class MCTSNode:
         wins = self._results[1]
         loses = self._results[-1]
         return wins-loses
-
+    
     def n(self):
         return self._numVisits
 
@@ -60,9 +60,6 @@ class MCTSNode:
 
         if self.parent: self.parent.backpropagate(result)
     
-    def isFullyExpanded(self):
-        return len(self._untriedActions) == 0
-    
     def bestChild(self, c_param=0.1):
 
         choicesWeights = [(c.q() / c.n()) 
@@ -78,7 +75,7 @@ class MCTSNode:
         cur = self
         
         while not cur.state.isGameOver():
-            if not cur.isFullyExpanded():
+            if len(cur._untriedActions) > 0:
                 return cur.expand()
             else:
                 cur = cur.bestChild()
@@ -87,7 +84,7 @@ class MCTSNode:
 
     def bestAction(self):
 
-        simulationNum = 1000
+        simulationNum = 100
 
         for _ in range(simulationNum):
 
@@ -95,4 +92,7 @@ class MCTSNode:
             reward = v.rollout()
             v.backpropagate(reward)
         
-        return self.bestChild()
+        # for c in self.children:
+        #     print(c.parentAction,c._results[1],c._results[-1],c._numVisits)
+
+        return self.bestChild().parentAction

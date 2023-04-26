@@ -34,4 +34,4 @@ class Agent:
     
     def MCTSAction(self) -> Action:
         node = MCTSNode(state = GameState(self._gameState))
-        return node.bestAction().parentAction
+        return node.bestAction()
