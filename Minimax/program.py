@@ -10,6 +10,7 @@ class Agent:
         """
         self._color = color
         self._gameState = GameState()
+        self._maxDepth = 3
 
     def turn(self, color: PlayerColor, action: Action, **referee: dict):
         """
@@ -27,7 +28,7 @@ class Agent:
         """
         Return the next action to take.
         """
-        
+
         return self.minimaxAction();
 
     def minimaxAction(self) -> Action:
@@ -36,20 +37,20 @@ class Agent:
         return root_node.bestAction
 
     def maximise(self, node, depth):
-        # print("depth:", depth)
+        #print("depth:", depth)
         # Reached terminal node
-        if node.isTerminalNode():
+        if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.gameState.utility())
             return node
 
-        if not node.is_expanded:
+        if not node.isExpanded:
             node.expand()
 
         # Find child node with maximum value
         max_value = -float('inf')
         max_node = None
         for child_node in node.children:
-            child_value = self.minimise(child_node, depth+1).minimax_value
+            child_value = self.minimise(child_node, depth+1).minimaxValue
             if child_value > max_value:
                 max_value = child_value
                 max_node = child_node
@@ -60,20 +61,20 @@ class Agent:
         return node
 
     def minimise(self, node, depth):
-        # print("depth:", depth)
+        #print("depth:", depth)
         # Reached terminal node
-        if node.isTerminalNode():
+        if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.gameState.utility())
             return node
 
-        if not node.is_expanded:
+        if not node.isExpanded:
             node.expand()
         
         # Find child node with minimum value
         min_value = float('inf')
         min_node = None
         for child_node in node.children:
-            child_value = self.maximise(child_node, depth+1).minimax_value
+            child_value = self.maximise(child_node, depth+1).minimaxValue
             if child_value < min_value:
                 min_value = child_value
                 min_node = child_node

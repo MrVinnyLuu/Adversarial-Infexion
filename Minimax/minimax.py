@@ -9,9 +9,9 @@ class MinimaxNode:
         self.parent = parent
         self.parentAction = parentAction
         self.children = []
-        self.is_expanded = False
-        self.minimax_value = -float('inf')
-        self.best_action = None
+        self.isExpanded = False
+        self.minimaxValue = -float('inf')
+        self.bestAction = None
         self._untriedActions = self.gameState.getLegalActions()
 
     def expand(self):
@@ -33,7 +33,7 @@ class MinimaxNode:
         return self.gameState.utility()
 
     def setMinimaxValue(self, value):
-        self.minimax_value = value
+        self.minimaxValue = value
 
     def setBestAction(self, action):
-        self.best_action = action
+        self.bestAction = action
