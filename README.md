@@ -8,6 +8,8 @@
 - Good for games with large branching factor as is the case in Infexion
 - Need to perform many playouts, will take a long time to compute average utility of all the possible states - could use a modified version with an evaluation function to speed things up?
 - According to studies there seems to be an issue of MCTS not detecting “shallow traps” - outcomes of the game in which the opponent can win within only a few moves
+- Current implementation: simulates x amount of playouts distrubuted across the children of the current state. Picks the best move based on the given formula.
+- As red, this MCTS always loses against Agent_Utility. As blue, this MCTS always draws against Agent_Utility.
 
 ### Minimax with Alpha-Beta pruning
 
