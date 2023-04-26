@@ -1,6 +1,7 @@
 # COMP30024 Artificial Intelligence, Semester 1 2023
 # Project Part B: Game Playing Agent
 
+import random
 from Utilities.PriorityQueue import PriorityQueue, PQNode
 from Utilities.GameState import *
 from referee.game import \
@@ -48,7 +49,8 @@ class Agent:
         for action in self._gameState.getLegalActions():
             self._gameState.parseAction(action)
             utility = self._gameState.utility()
-            if utility < bestUtility or bestUtility == -1:
+            if (utility <= bestUtility and random.choice([True, False, False]))\
+                or bestUtility == -1:
                 bestUtility = utility
                 bestAction = action
             self._gameState.revert()
