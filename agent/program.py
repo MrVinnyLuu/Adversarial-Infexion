@@ -2,8 +2,8 @@
 
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
-from agent.GameState import *
-from agent.minimax import *
+from .GameState import *
+from .minimax import *
 
 class Agent:
     def __init__(self, color: PlayerColor, **referee: dict):
