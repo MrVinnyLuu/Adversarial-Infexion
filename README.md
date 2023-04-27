@@ -16,6 +16,12 @@
 - Slow, since branching factor of Infexion is fairly large (between 6 and 53) - though speed could hopefully be improved with a good evaluation function & further pruning in addition to alpha-beta
 - Able to detect shallow traps
 
+### Utility Function
+- Utility value based on total power only almost always beats Utility value based on number of cells only
+- Probably something like this would be best: A*(powerEnemies/powerAllies) + B*(numEnemies/numAllies), A>B
+- Need to do lots of tests to decide A and B
+- Maybe also consider "occupied lines" like the heuristic in Part A
+
 ## Links that may be useful for further research
 
 - Comparison of MCTS and Minimax: <https://www.diva-portal.org/smash/get/diva2:1597267/FULLTEXT01.pdf>
