@@ -2,7 +2,7 @@
 
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
-from Utilities import *
+from agent.GameState import *
 from agent.minimax import *
 
 class Agent:
