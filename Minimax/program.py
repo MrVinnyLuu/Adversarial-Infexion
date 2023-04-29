@@ -30,7 +30,7 @@ class Agent:
         """
         Return the next action to take.
         """
-        return self.minimaxAction();
+        return self.minimaxAction()
 
     def minimaxAction(self) -> Action:
         root_node = MinimaxNode(gameState = GameState(state=self._gameState))
@@ -38,7 +38,7 @@ class Agent:
         return root_node.bestAction
 
     def maximise(self, node, depth, alpha=-float('inf'), beta=float('inf')):
-        #print("depth:", depth)
+        # print("depth:", depth)
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.gameState.utility())
@@ -51,6 +51,13 @@ class Agent:
         max_value = -float('inf')
         max_node = None
         for child_node in node.children:
+
+            # Return straight away in the event of winning move
+            if child_node.gameState.utility() == 0:
+                child_node.setMinimaxValue(child_node.gameState.utility())
+                node.setBestAction(child_node.parentAction)
+                return child_node
+            
             child_value = self.minimise(child_node, depth+1, alpha, beta).minimaxValue
             if child_value > max_value:
                 max_value = child_value
@@ -68,7 +75,7 @@ class Agent:
         return node
 
     def minimise(self, node, depth, alpha, beta):
-        #print("depth:", depth)
+        # print("depth:", depth)
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.gameState.utility())

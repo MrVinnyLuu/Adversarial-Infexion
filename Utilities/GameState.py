@@ -108,16 +108,15 @@ class GameState:
         return bestAction
 ################################################################################
 
-    def utility(self) -> int:
+    def utility(self, color=None) -> int:
 
-        color = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
+        if not color:
+            color = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
 
         powerAllies = sum(self.getCells(color).values())
         powerEnemies = self.totalPower - powerAllies
         numAllies = len(self.getCells(color))
         numEnemies = 49 - len(self.empties) - numAllies
-
-        if powerAllies == 0: return -1
         
         return (numEnemies + powerEnemies)/(numAllies + powerAllies)
 

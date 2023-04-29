@@ -12,7 +12,7 @@ player1_win_count = 0
 player2_win_count = 0
 draw_count = 0
 
-for i in range(num_games):
+for i in range(1,num_games+1):
     # Run python3 -m referee player1 player2 > game_output.txt
     cmd_str = f"python3 -m referee {player1} {player2} > game_output.txt"
     subprocess.run(cmd_str, shell=True)
