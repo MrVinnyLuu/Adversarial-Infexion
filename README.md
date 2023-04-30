@@ -15,6 +15,7 @@
 
 - Slow, since branching factor of Infexion is fairly large (between 6 and 53) - though speed could hopefully be improved with a good evaluation function & further pruning in addition to alpha-beta
 - Able to detect shallow traps
+- Using "fail-soft" variant (from the Wikipedia page) prunes more and seems to have no effect on actions
 
 ### Utility Function
 - Utility value based on total power only almost always beats Utility value based on number of cells only
