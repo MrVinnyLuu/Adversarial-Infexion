@@ -4,8 +4,10 @@ from referee.game import \
 from Utilities.GameState import *
 
 class MinimaxNode:
-    def __init__(self, gameState: GameState, parent=None, parentAction:Action=None) -> None:
+    def __init__(self, gameState: GameState, color: PlayerColor,
+                 parent=None, parentAction:Action=None) -> None:
         self.gameState = gameState
+        self.color = color
         self.parent = parent
         self.parentAction = parentAction
         self.children = []
@@ -21,7 +23,8 @@ class MinimaxNode:
             childState = GameState(state=self.gameState)
             childState.parseAction(action)
 
-            childNode = MinimaxNode(childState, parent=self, parentAction=action)
+            childNode = MinimaxNode(childState, self.color,
+                                    parent=self, parentAction=action)
             self.children.append(childNode)
         
         self.is_expanded = True
@@ -37,3 +40,6 @@ class MinimaxNode:
 
     def setBestAction(self, action):
         self.bestAction = action
+    
+    def evaluate(self):
+        return 10 - self.gameState.utility(self.color)

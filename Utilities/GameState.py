@@ -72,14 +72,14 @@ class GameState:
         actions = []
         color = PlayerColor.RED if self.turnNum%2 == 1 else PlayerColor.BLUE
 
+        for cell in self.getCells(color).keys():
+            for dir in HexDir:
+                actions.append(SpreadAction(cell, dir))
+
         if self.totalPower < 49:
             for cell in self.empties:
                 actions.append(SpawnAction(cell))
 
-        for cell in self.getCells(color).keys():
-            for dir in HexDir:
-                actions.append(SpreadAction(cell, dir))
-        
         return actions
 
     def parseAction(self, action: Action):
@@ -118,6 +118,8 @@ class GameState:
         numAllies = len(self.getCells(color))
         numEnemies = 49 - len(self.empties) - numAllies
         
+        if numAllies == 0: return float('inf')
+
         return (numEnemies + powerEnemies)/(numAllies + powerAllies)
 
     def spawn(self, color: PlayerColor, cell: HexPos):
