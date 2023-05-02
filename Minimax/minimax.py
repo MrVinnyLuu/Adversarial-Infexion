@@ -18,17 +18,17 @@ class MinimaxNode:
 
     def expand(self):
         # Expand node to get all its children
-        while (len(self._untriedActions) > 0):
-            action = self._untriedActions.pop()
+        for action in self._untriedActions:
             childState = GameState(state=self.gameState)
             childState.parseAction(action)
-
             childNode = MinimaxNode(childState, self.color,
                                     parent=self, parentAction=action)
             self.children.append(childNode)
         
+        self.children.sort(key=lambda x: x.evaluate())
+
         self.is_expanded = True
-    
+
     def isTerminalNode(self):
         return self.gameState.isGameOver()
 

@@ -18,7 +18,7 @@ class Agent:
         """
         Initialise the agent.
         """
-        random.seed(0)
+        random.seed(1)
         self._color = color
         self._gameState = GameState()
 

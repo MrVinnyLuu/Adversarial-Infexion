@@ -14,6 +14,7 @@ class Agent:
         self._gameState = GameState()
         self._maxDepth = 4
 
+        self.nodes = 0
         self.alphaPrune = 0
         self.betaPrune = 0
 
@@ -33,7 +34,7 @@ class Agent:
         """
         Return the next action to take.
         """
-        print(self.alphaPrune, self.betaPrune)
+        print(self.nodes, self.alphaPrune, self.betaPrune)
         return self.minimaxAction()
 
     def minimaxAction(self) -> Action:
@@ -43,6 +44,7 @@ class Agent:
         return root_node.bestAction
 
     def maximise(self, node, depth, alpha=-float('inf'), beta=float('inf')):
+        self.nodes += 1
         # print(alpha,beta)
         # print("depth:", depth)
         # Reached terminal node
@@ -59,8 +61,8 @@ class Agent:
         for child_node in node.children:
 
             # Return straight away in the event of winning move
-            if child_node.evaluate() == 0:
-                child_node.setMinimaxValue(child_node.evaluate())
+            if child_node.evaluate() == 10:
+                child_node.setMinimaxValue(10)
                 node.setBestAction(child_node.parentAction)
                 return child_node
             
@@ -82,6 +84,7 @@ class Agent:
         return node
 
     def minimise(self, node, depth, alpha, beta):
+        self.nodes += 1
         # print(alpha,beta)
         # print("depth:", depth)
         # Reached terminal node
@@ -96,6 +99,13 @@ class Agent:
         min_value = float('inf')
         min_node = None
         for child_node in node.children:
+
+            # Return straight away in the event of losing move
+            if child_node.evaluate() == -float('inf'):
+                child_node.setMinimaxValue(-float('inf'))
+                node.setBestAction(child_node.parentAction)
+                return child_node
+
             child_value = self.maximise(child_node, depth+1, alpha, beta).minimaxValue
             if child_value < min_value:
                 min_value = child_value
