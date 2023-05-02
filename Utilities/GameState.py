@@ -84,10 +84,13 @@ class GameState:
 
     def parseAction(self, action: Action):
         color = PlayerColor.RED if self.turnNum%2 == 1 else PlayerColor.BLUE
-        if "SPAWN" in str(action):
-            self.spawn(color, action.cell)
-        elif "SPREAD" in str(action):
-            self.spread(color, action.cell, action.direction)
+        match action:
+            case SpawnAction(cell):
+                self.spawn(color, cell)
+                pass
+            case SpreadAction(cell, direction):
+                self.spread(color, cell, direction)
+                pass
     
 ################################################################################
     def utilityAction(self) -> Action:

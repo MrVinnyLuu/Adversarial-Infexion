@@ -38,48 +38,49 @@ class Agent:
         return self.minimaxAction()
 
     def minimaxAction(self) -> Action:
-        root_node = MinimaxNode(gameState = GameState(state=self._gameState),
+        rootNode = MinimaxNode(gameState = GameState(state=self._gameState),
                                 color = self._color)
-        self.maximise(root_node, 1)
-        return root_node.bestAction
+        self.maximise(rootNode, 1)
+        return rootNode.bestAction
 
     def maximise(self, node, depth, alpha=-float('inf'), beta=float('inf')):
         self.nodes += 1
         # print(alpha,beta)
         # print("depth:", depth)
         # Reached terminal node
+
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.evaluate())
             return node
 
-        if not node.isExpanded:
-            node.expand()
+        if not node.isExpanded: node.expand()
 
         # Find child node with maximum value
-        max_value = -float('inf')
-        max_node = None
-        for child_node in node.children:
+        maxValue = -float('inf')
+        maxNode = None
+
+        for childNode in node.children:
 
             # Return straight away in the event of winning move
-            if child_node.evaluate() == 10:
-                child_node.setMinimaxValue(10)
-                node.setBestAction(child_node.parentAction)
-                return child_node
+            if childNode.evaluate() == 10:
+                childNode.setMinimaxValue(10)
+                node.setBestAction(childNode.parentAction)
+                return childNode
             
-            child_value = self.minimise(child_node, depth+1, alpha, beta).minimaxValue
-            if child_value > max_value:
-                max_value = child_value
-                max_node = child_node
+            childValue = self.minimise(childNode, depth+1, alpha, beta).minimaxValue
+            if childValue > maxValue:
+                maxValue = childValue
+                maxNode = childNode
 
-            alpha = max(alpha, max_value)
+            alpha = max(alpha, maxValue)
 
             # Alpha-beta pruning
-            if max_value >= beta:
+            if maxValue >= beta:
                 self.betaPrune += 1
                 break
 
-        node.setMinimaxValue(max_value)
-        node.setBestAction(max_node.parentAction)
+        node.setMinimaxValue(maxValue)
+        node.setBestAction(maxNode.parentAction)
 
         return node
 
@@ -88,37 +89,38 @@ class Agent:
         # print(alpha,beta)
         # print("depth:", depth)
         # Reached terminal node
+
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.evaluate())
             return node
 
-        if not node.isExpanded:
-            node.expand()
+        if not node.isExpanded: node.expand()
         
         # Find child node with minimum value
-        min_value = float('inf')
-        min_node = None
-        for child_node in node.children:
+        minValue = float('inf')
+        minNode = None
+        
+        for childNode in node.children:
 
             # Return straight away in the event of losing move
-            if child_node.evaluate() == -float('inf'):
-                child_node.setMinimaxValue(-float('inf'))
-                node.setBestAction(child_node.parentAction)
-                return child_node
+            if childNode.evaluate() == -float('inf'):
+                childNode.setMinimaxValue(-float('inf'))
+                node.setBestAction(childNode.parentAction)
+                return childNode
 
-            child_value = self.maximise(child_node, depth+1, alpha, beta).minimaxValue
-            if child_value < min_value:
-                min_value = child_value
-                min_node = child_node
+            childValue = self.maximise(childNode, depth+1, alpha, beta).minimaxValue
+            if childValue < minValue:
+                minValue = childValue
+                minNode = childNode
 
-            beta = min(beta, min_value)
+            beta = min(beta, minValue)
 
             # Alpha-beta pruning
-            if min_value <= alpha:
+            if minValue <= alpha:
                 self.alphaPrune += 1
                 break
 
-        node.setMinimaxValue(min_value)
-        node.setBestAction(min_node.parentAction)
+        node.setMinimaxValue(minValue)
+        node.setBestAction(minNode.parentAction)
 
         return node
