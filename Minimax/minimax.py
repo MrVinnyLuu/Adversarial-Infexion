@@ -17,6 +17,7 @@ class MinimaxNode:
         self._untriedActions = self.gameState.getLegalActions()
 
     def expand(self):
+        
         # Expand node to get all its children
         for action in self._untriedActions:
             childState = GameState(state=self.gameState)
@@ -25,6 +26,7 @@ class MinimaxNode:
                                     parent=self, parentAction=action)
             self.children.append(childNode)
         
+        # Pre-sort moves
         self.children.sort(key=lambda x: x.evaluate())
 
         self.is_expanded = True

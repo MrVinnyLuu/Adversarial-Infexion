@@ -12,7 +12,7 @@ class Agent:
         """
         self._color = color
         self._gameState = GameState()
-        self._maxDepth = 4
+        self._maxDepth = 4 # Depth cutoff
 
         self.nodes = 0
         self.alphaPrune = 0
@@ -56,19 +56,25 @@ class Agent:
         if not node.isExpanded: node.expand()
 
         # Find child node with maximum value
-        maxValue = -float('inf')
+        maxValue = -float('inf') # Fail-soft
         maxNode = None
 
         for childNode in node.children:
 
-            # Return straight away in the event of winning move
+            # Instant termination
             if childNode.evaluate() == 10:
                 childNode.setMinimaxValue(10)
                 node.setBestAction(childNode.parentAction)
                 return childNode
             
             childValue = self.minimise(childNode, depth+1, alpha, beta).minimaxValue
-            if childValue > maxValue:
+
+            if childValue >= maxValue:
+
+                # # Control branching factor
+                # if childValue == maxValue and \
+                #     isinstance(childNode.parentAction, SpreadAction): continue
+                    
                 maxValue = childValue
                 maxNode = childNode
 
@@ -97,19 +103,24 @@ class Agent:
         if not node.isExpanded: node.expand()
         
         # Find child node with minimum value
-        minValue = float('inf')
+        minValue = float('inf') # Fail-soft
         minNode = None
         
         for childNode in node.children:
 
-            # Return straight away in the event of losing move
+            # Instant termination
             if childNode.evaluate() == -float('inf'):
                 childNode.setMinimaxValue(-float('inf'))
                 node.setBestAction(childNode.parentAction)
                 return childNode
 
             childValue = self.maximise(childNode, depth+1, alpha, beta).minimaxValue
-            if childValue < minValue:
+            if childValue <= minValue:
+
+                # # Control branching factor
+                # if childValue == minValue and \
+                #     isinstance(childNode.parentAction, SpreadAction): continue
+                
                 minValue = childValue
                 minNode = childNode
 
