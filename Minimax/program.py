@@ -69,11 +69,14 @@ class Agent:
             
             childValue = self.minimise(childNode, depth+1, alpha, beta).minimaxValue
 
+            if len(node.children) == 6:
+                print(childNode.parentAction, childValue)
+
             if childValue >= maxValue:
 
-                # # Control branching factor
-                # if childValue == maxValue and \
-                #     isinstance(childNode.parentAction, SpreadAction): continue
+                # Control branching factor
+                if childValue == maxValue and maxNode and \
+                    isinstance(childNode.parentAction, SpreadAction): continue
                     
                 maxValue = childValue
                 maxNode = childNode
@@ -117,9 +120,9 @@ class Agent:
             childValue = self.maximise(childNode, depth+1, alpha, beta).minimaxValue
             if childValue <= minValue:
 
-                # # Control branching factor
-                # if childValue == minValue and \
-                #     isinstance(childNode.parentAction, SpreadAction): continue
+                # Control branching factor
+                if childValue == minValue and minNode and \
+                    isinstance(childNode.parentAction, SpreadAction): continue
                 
                 minValue = childValue
                 minNode = childNode
