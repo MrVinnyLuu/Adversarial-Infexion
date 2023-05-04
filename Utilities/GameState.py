@@ -111,6 +111,7 @@ class GameState:
         return bestAction
 ################################################################################
 
+    # Lower is better (used in Agent_Utility [temporary])
     def utility(self, color=None) -> int:
 
         if not color:
@@ -124,6 +125,63 @@ class GameState:
         if numAllies == 0: return float('inf')
 
         return (numEnemies + powerEnemies)/(numAllies + powerAllies)
+    
+    # Higher is better (used in Minimax)
+    def evaluate(self, color: PlayerColor) -> int:
+
+        # Consider control
+
+        powerAllies = sum(self.getCells(color).values())
+        powerEnemies = self.totalPower - powerAllies
+        numAllies = len(self.getCells(color))
+        numEnemies = 49 - len(self.empties) - numAllies
+
+        if numEnemies == 0: return float('inf')
+        if numAllies == 0: return -float('inf')
+
+        control = (numAllies + powerAllies)/(numEnemies + powerEnemies)
+
+
+
+        # Consider positioning
+
+        turn = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
+
+        # In each axis, find which lines has allies
+        AoccupyR = [0]*7
+        AoccupyQ = [0]*7
+        AoccupyP = [0]*7       
+        for pos in self.getCells(color).keys():
+            AoccupyR[pos.r] = 1
+            AoccupyQ[pos.q] = 1
+            AoccupyP[(pos.r+pos.q)%7] = 1
+        
+        # In each axis, find which lines has enemies
+        EoccupyR = [0]*7
+        EoccupyQ = [0]*7
+        EoccupyP = [0]*7
+        for pos in self.reds.keys():
+            EoccupyR[pos.r] = 1
+            EoccupyQ[pos.q] = 1
+            EoccupyP[(pos.r+pos.q)%7] = 1
+
+        # Find how many lines control cells from both colors
+        Rs = Qs = Ps = 0
+
+        for i in range(7):
+            if AoccupyR[i] and EoccupyR[i]: Rs += 1
+
+        for i in range(7):
+            if AoccupyQ[i] and EoccupyQ[i]: Qs += 1
+        
+        for i in range(7):
+            if AoccupyP[i] and EoccupyP[i]: Ps += 1
+        
+        lines = min(Rs, Qs, Ps)
+
+        position = 0
+
+        return control + position
 
     def spawn(self, color: PlayerColor, cell: HexPos):
 
