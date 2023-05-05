@@ -139,9 +139,7 @@ class GameState:
         if numEnemies == 0: return float('inf')
         if numAllies == 0: return -float('inf')
 
-        control = (numAllies + powerAllies)/(numEnemies + powerEnemies)
-
-
+        controlEval = (numAllies + powerAllies)/(numEnemies + powerEnemies)
 
         # Consider positioning
 
@@ -165,23 +163,22 @@ class GameState:
             EoccupyQ[pos.q] = 1
             EoccupyP[(pos.r+pos.q)%7] = 1
 
-        # Find how many lines control cells from both colors
+        # Find how many lines has cells from both colors
         Rs = Qs = Ps = 0
 
         for i in range(7):
             if AoccupyR[i] and EoccupyR[i]: Rs += 1
-
-        for i in range(7):
             if AoccupyQ[i] and EoccupyQ[i]: Qs += 1
-        
-        for i in range(7):
             if AoccupyP[i] and EoccupyP[i]: Ps += 1
-        
+
         lines = min(Rs, Qs, Ps)
 
-        position = 0
+        if turn == color:
+            positionEval = lines
+        else:
+            positionEval = -lines
 
-        return control + position
+        return 7*controlEval - positionEval
 
     def spawn(self, color: PlayerColor, cell: HexPos):
 

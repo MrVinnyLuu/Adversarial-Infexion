@@ -45,3 +45,4 @@ class MinimaxNode:
     
     def evaluate(self):
         return 10 - self.gameState.utility(self.color)
+        # return self.gameState.evaluate(self.color)

@@ -62,8 +62,8 @@ class Agent:
         for childNode in node.children:
 
             # Instant termination
-            if childNode.evaluate() == 10:
-                childNode.setMinimaxValue(10)
+            if childNode.evaluate() == float('inf'):
+                childNode.setMinimaxValue(float('inf'))
                 node.setBestAction(childNode.parentAction)
                 return childNode
             
