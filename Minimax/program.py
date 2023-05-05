@@ -45,10 +45,8 @@ class Agent:
 
     def maximise(self, node, depth, alpha=-float('inf'), beta=float('inf')):
         self.nodes += 1
-        # print(alpha,beta)
-        # print("depth:", depth)
-        # Reached terminal node
 
+        # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.evaluate())
             return node
@@ -95,10 +93,8 @@ class Agent:
 
     def minimise(self, node, depth, alpha, beta):
         self.nodes += 1
-        # print(alpha,beta)
-        # print("depth:", depth)
-        # Reached terminal node
 
+        # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.evaluate())
             return node

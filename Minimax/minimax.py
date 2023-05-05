@@ -44,5 +44,6 @@ class MinimaxNode:
         self.bestAction = action
     
     def evaluate(self):
-        return 10 - self.gameState.utility(self.color)
-        # return self.gameState.evaluate(self.color)
+        # return 10 - self.gameState.utility(self.color)
+        return self.gameState.evaluate(self.color)
+        

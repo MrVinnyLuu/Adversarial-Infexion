@@ -143,8 +143,6 @@ class GameState:
 
         # Consider positioning
 
-        turn = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
-
         # In each axis, find which lines has allies
         AoccupyR = [0]*7
         AoccupyQ = [0]*7
@@ -173,12 +171,13 @@ class GameState:
 
         lines = min(Rs, Qs, Ps)
 
+        turn = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
         if turn == color:
             positionEval = lines
         else:
             positionEval = -lines
 
-        return 7*controlEval - positionEval
+        return 7*controlEval + positionEval
 
     def spawn(self, color: PlayerColor, cell: HexPos):
 
