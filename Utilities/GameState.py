@@ -141,43 +141,7 @@ class GameState:
 
         controlEval = (numAllies + powerAllies)/(numEnemies + powerEnemies)
 
-        # Consider positioning
-
-        # In each axis, find which lines has allies
-        AoccupyR = [0]*7
-        AoccupyQ = [0]*7
-        AoccupyP = [0]*7       
-        for pos in self.getCells(color).keys():
-            AoccupyR[pos.r] = 1
-            AoccupyQ[pos.q] = 1
-            AoccupyP[(pos.r+pos.q)%7] = 1
-        
-        # In each axis, find which lines has enemies
-        EoccupyR = [0]*7
-        EoccupyQ = [0]*7
-        EoccupyP = [0]*7
-        for pos in self.reds.keys():
-            EoccupyR[pos.r] = 1
-            EoccupyQ[pos.q] = 1
-            EoccupyP[(pos.r+pos.q)%7] = 1
-
-        # Find how many lines has cells from both colors
-        Rs = Qs = Ps = 0
-
-        for i in range(7):
-            if AoccupyR[i] and EoccupyR[i]: Rs += 1
-            if AoccupyQ[i] and EoccupyQ[i]: Qs += 1
-            if AoccupyP[i] and EoccupyP[i]: Ps += 1
-
-        lines = min(Rs, Qs, Ps)
-
-        turn = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
-        if turn == color:
-            positionEval = lines
-        else:
-            positionEval = -lines
-
-        return 7*controlEval + positionEval
+        return controlEval
 
     def spawn(self, color: PlayerColor, cell: HexPos):
 
