@@ -99,19 +99,19 @@ class GameState:
         bestAction = None
         bestUtility = float('inf')
 
-        self._gameState.hold()
+        self.hold()
 
-        for action in self._gameState.getLegalActions():
+        for action in self.getLegalActions():
 
-            self._gameState.parseAction(action)
-            utility = self._gameState.utility()
+            self.parseAction(action)
+            utility = self.utility()
 
             if utility < bestUtility or \
                 (utility == bestUtility and random.choice([True, False])): 
                 bestUtility = utility
                 bestAction = action
 
-            self._gameState.revert()
+            self.revert()
 
         return bestAction
 ################################################################################
