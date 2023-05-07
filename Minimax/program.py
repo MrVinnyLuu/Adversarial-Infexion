@@ -1,5 +1,6 @@
 # Implementation of pseudocode from https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
+import random
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 from Utilities.GameState import *
@@ -71,7 +72,8 @@ class Agent:
             childValue = \
                 self.minimise(childNode, depth+1, alpha, beta).minimaxValue
 
-            if not maxNode or childValue > maxValue:
+            if not maxNode or childValue > maxValue or \
+                (childValue == maxValue and random.choice([True, False])):
                 maxValue = childValue
                 maxNode = childNode
 
@@ -115,7 +117,8 @@ class Agent:
             childValue = \
                 self.maximise(childNode, depth+1, alpha, beta).minimaxValue
     
-            if not minNode or childValue < minValue:
+            if not minNode or childValue > minValue or \
+                (childValue == minValue and random.choice([True, False])):
                 minValue = childValue
                 minNode = childNode
 

@@ -18,7 +18,7 @@ class Agent:
         """
         Initialise the agent.
         """
-        random.seed(2023)
+        # random.seed(30024)
         self._color = color
         self._gameState = GameState()
 
@@ -43,17 +43,20 @@ class Agent:
     def utilityAction(self) -> Action:
 
         bestAction = None
-        bestUtility = -1
+        bestUtility = float('inf')
 
         self._gameState.hold()
 
         for action in self._gameState.getLegalActions():
+
             self._gameState.parseAction(action)
             utility = self._gameState.utility()
-            if (utility <= bestUtility and random.choice([True, False, False]))\
-                or bestUtility == -1:
+
+            if utility < bestUtility or \
+                (utility == bestUtility and random.choice([True, False])): 
                 bestUtility = utility
                 bestAction = action
+
             self._gameState.revert()
 
         return bestAction

@@ -1,5 +1,6 @@
 # Adapted from https://ai-boson.github.io/mcts/
 
+import random
 from collections import defaultdict
 from math import sqrt, log
 from Utilities.GameState import *

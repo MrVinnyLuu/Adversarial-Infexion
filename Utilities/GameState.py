@@ -1,4 +1,5 @@
 
+import random
 from Utilities.PriorityQueue import PriorityQueue, PQNode
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
@@ -96,17 +97,21 @@ class GameState:
     def utilityAction(self) -> Action:
 
         bestAction = None
-        bestUtility = -1
+        bestUtility = float('inf')
 
-        self.hold()
+        self._gameState.hold()
 
-        for action in self.getLegalActions():
-            self.parseAction(action)
-            utility = self.utility()
-            if utility < bestUtility or bestUtility == -1:
+        for action in self._gameState.getLegalActions():
+
+            self._gameState.parseAction(action)
+            utility = self._gameState.utility()
+
+            if utility < bestUtility or \
+                (utility == bestUtility and random.choice([True, False])): 
                 bestUtility = utility
                 bestAction = action
-            self.revert()
+
+            self._gameState.revert()
 
         return bestAction
 ################################################################################

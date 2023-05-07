@@ -17,10 +17,8 @@ class Agent:
         """
         Initialise the agent.
         """
-        # random.seed(0)
-
+        # random.seed(30024)
         self._color = color
-
         self._gameState = GameState()
 
     def turn(self, color: PlayerColor, action: Action, **referee: dict):
