@@ -39,22 +39,22 @@ class Agent:
 
     def minimaxAction(self) -> Action:
         rootNode = MinimaxNode(gameState = GameState(state=self._gameState),
-                                color = self._color)
-        self.maximise(rootNode, 1)
+                               color = self._color)
+        self.maximise(rootNode)
         return rootNode.bestAction
 
-    def maximise(self, node, depth, alpha=-float('inf'), beta=float('inf')):
+    def maximise(self, node, depth=1, alpha=-float('inf'), beta=float('inf')):
         self.nodes += 1
 
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
-            node.setMinimaxValue(node.evaluate())
+            node.setMinimaxValue(node.utilityValue)
             return node
 
-        if not node.isExpanded: node.expand()
-
-        # Pre-sort moves
-        node.children.sort(key=lambda x: x.evaluate(), reverse=True)
+        if not node.isExpanded:
+            node.expand()
+            # Pre-sort moves
+            node.children.sort(key=lambda x: x.utilityValue, reverse=True)
 
         # Find child node with maximum value
         maxValue = -float('inf') # Fail-soft
@@ -63,12 +63,13 @@ class Agent:
         for childNode in node.children:
 
             # Instant termination
-            if childNode.evaluate() == float('inf'):
+            if childNode.utilityValue == float('inf'):
                 childNode.setMinimaxValue(float('inf'))
                 node.setBestAction(childNode.parentAction)
                 return childNode
             
-            childValue = self.minimise(childNode, depth+1, alpha, beta).minimaxValue
+            childValue = \
+                self.minimise(childNode, depth+1, alpha, beta).minimaxValue
 
             if not maxNode or childValue > maxValue:
                 maxValue = childValue
@@ -91,13 +92,13 @@ class Agent:
 
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
-            node.setMinimaxValue(node.evaluate())
+            node.setMinimaxValue(node.utilityValue)
             return node
 
-        if not node.isExpanded: node.expand()
-
-        # Pre-sort moves
-        node.children.sort(key=lambda x: x.evaluate())
+        if not node.isExpanded:
+            node.expand()
+            # Pre-sort moves
+            node.children.sort(key=lambda x: x.utilityValue)
         
         # Find child node with minimum value
         minValue = float('inf') # Fail-soft
@@ -106,12 +107,13 @@ class Agent:
         for childNode in node.children:
 
             # Instant termination
-            if childNode.evaluate() == -float('inf'):
+            if childNode.utilityValue == -float('inf'):
                 childNode.setMinimaxValue(-float('inf'))
                 node.setBestAction(childNode.parentAction)
                 return childNode
 
-            childValue = self.maximise(childNode, depth+1, alpha, beta).minimaxValue
+            childValue = \
+                self.maximise(childNode, depth+1, alpha, beta).minimaxValue
     
             if not minNode or childValue < minValue:
                 minValue = childValue
