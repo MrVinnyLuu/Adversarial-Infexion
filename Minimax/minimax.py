@@ -25,9 +25,6 @@ class MinimaxNode:
             childNode = MinimaxNode(childState, self.color,
                                     parent=self, parentAction=action)
             self.children.append(childNode)
-        
-        # Pre-sort moves
-        self.children.sort(key=lambda x: x.evaluate())
 
         self.is_expanded = True
 

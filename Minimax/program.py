@@ -53,6 +53,9 @@ class Agent:
 
         if not node.isExpanded: node.expand()
 
+        # Pre-sort moves
+        node.children.sort(key=lambda x: x.evaluate(), reverse=True)
+
         # Find child node with maximum value
         maxValue = -float('inf') # Fail-soft
         maxNode = None
@@ -67,8 +70,7 @@ class Agent:
             
             childValue = self.minimise(childNode, depth+1, alpha, beta).minimaxValue
 
-            if childValue > maxValue:
-                    
+            if not maxNode or childValue > maxValue:
                 maxValue = childValue
                 maxNode = childNode
 
@@ -93,6 +95,9 @@ class Agent:
             return node
 
         if not node.isExpanded: node.expand()
+
+        # Pre-sort moves
+        node.children.sort(key=lambda x: x.evaluate())
         
         # Find child node with minimum value
         minValue = float('inf') # Fail-soft
@@ -107,8 +112,8 @@ class Agent:
                 return childNode
 
             childValue = self.maximise(childNode, depth+1, alpha, beta).minimaxValue
-            if childValue < minValue:
-                
+    
+            if not minNode or childValue < minValue:
                 minValue = childValue
                 minNode = childNode
 

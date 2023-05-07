@@ -111,7 +111,7 @@ class GameState:
         return bestAction
 ################################################################################
 
-    # Lower is better (used in Agent_Utility [temporary])
+    # Lower is better (used in Agent_Utility and MCTS [temporary])
     def utility(self, color=None) -> int:
 
         if not color:
@@ -129,8 +129,6 @@ class GameState:
     # Higher is better (used in Minimax)
     def evaluate(self, color: PlayerColor) -> int:
 
-        # Consider control
-
         powerAllies = sum(self.getCells(color).values())
         powerEnemies = self.totalPower - powerAllies
         numAllies = len(self.getCells(color))
@@ -139,9 +137,7 @@ class GameState:
         if numEnemies == 0: return float('inf')
         if numAllies == 0: return -float('inf')
 
-        controlEval = (numAllies + powerAllies)/(numEnemies + powerEnemies)
-
-        return controlEval
+        return (numAllies + powerAllies)/(numEnemies + powerEnemies)
 
     def spawn(self, color: PlayerColor, cell: HexPos):
 
@@ -171,7 +167,6 @@ class GameState:
                 stayingCells = self.reds
                 pass
         
-        # Value of cell's power
         k = spreadingCells.pop(cell)
         self.empties.add(cell)
         self.totalPower -= k
