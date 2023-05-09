@@ -1,10 +1,10 @@
-# Implementation of pseudocode from https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+# Loose adaptation of pseudocode from https://en.wikipedia.org/wiki/Minimax and https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 import random
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 from Utilities.GameState import *
-from Minimax.minimax import *
+from agent.minimax import *
 
 class Agent:
     def __init__(self, color: PlayerColor, **referee: dict):
@@ -35,7 +35,6 @@ class Agent:
         """
         Return the next action to take.
         """
-        print(self.nodes, self.alphaPrune, self.betaPrune)
         return self.minimaxAction()
 
     def minimaxAction(self) -> Action:
