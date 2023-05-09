@@ -4,7 +4,7 @@ import random
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 from .Utilities.GameState import *
-from agent.minimax import *
+from .minimax import *
 
 class Agent:
     def __init__(self, color: PlayerColor, **referee: dict):
