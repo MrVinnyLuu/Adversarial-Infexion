@@ -1,6 +1,6 @@
 
 import random
-from Utilities.PriorityQueue import PriorityQueue, PQNode
+from .PriorityQueue import PriorityQueue, PQNode
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 

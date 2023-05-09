@@ -3,7 +3,7 @@
 import random
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
-from Utilities.GameState import *
+from .Utilities.GameState import *
 from agent.minimax import *
 
 class Agent:

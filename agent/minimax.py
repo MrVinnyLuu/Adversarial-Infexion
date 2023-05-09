@@ -1,7 +1,7 @@
 
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
-from Utilities.GameState import *
+from .Utilities.GameState import *
 
 class MinimaxNode:
     def __init__(self, gameState: GameState, color: PlayerColor,
