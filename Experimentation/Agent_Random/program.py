@@ -2,7 +2,7 @@
 # Project Part B: Game Playing Agent
 
 import random
-from Utilities.GameState import *
+from agent.GameState import *
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 

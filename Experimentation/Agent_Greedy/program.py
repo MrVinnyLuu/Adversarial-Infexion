@@ -2,8 +2,7 @@
 # Project Part B: Game Playing Agent
 
 import random
-from Utilities.PriorityQueue import PriorityQueue, PQNode
-from Utilities.GameState import *
+from agent.GameState import *
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 

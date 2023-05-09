@@ -3,7 +3,7 @@
 import random
 from collections import defaultdict
 from math import sqrt, log
-from Utilities.GameState import *
+from agent.GameState import *
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
 
@@ -92,8 +92,5 @@ class MCTSNode:
             v = self._treePolicy()
             reward = v.rollout()
             v.backpropagate(reward)
-        
-        # for c in self.children:
-        #     print(c.parentAction,c._results[1],c._results[-1],c._numVisits)
 
         return self.bestChild().parentAction

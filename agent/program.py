@@ -1,9 +1,9 @@
-# Loose adaptation of pseudocode from https://en.wikipedia.org/wiki/Minimax and https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+# Loose adaptation of pseudocode from https://en.wikipedia.org/wiki/Minimax and
+# https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 import random
-from referee.game import \
-    PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
-from .Utilities.GameState import *
+from referee.game import PlayerColor, Action, SpawnAction, SpreadAction
+from .GameState import *
 from .minimax import *
 
 class Agent:
@@ -14,10 +14,6 @@ class Agent:
         self._color = color
         self._gameState = GameState()
         self._maxDepth = 4 # Depth cutoff
-
-        self.nodes = 0
-        self.alphaPrune = 0
-        self.betaPrune = 0
 
     def turn(self, color: PlayerColor, action: Action, **referee: dict):
         """
@@ -35,17 +31,12 @@ class Agent:
         """
         Return the next action to take.
         """
-        return self.minimaxAction()
-
-    def minimaxAction(self) -> Action:
         rootNode = MinimaxNode(gameState = GameState(state=self._gameState),
                                color = self._color)
         self.maximise(rootNode)
-        return rootNode.bestAction
+        return rootNode.bestAction        
 
     def maximise(self, node, depth=1, alpha=-float('inf'), beta=float('inf')):
-        self.nodes += 1
-
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.utilityValue)
@@ -53,7 +44,7 @@ class Agent:
 
         if not node.isExpanded:
             node.expand()
-            # Pre-sort moves
+            # Pre-sort moves (descending order)
             node.children.sort(key=lambda x: x.utilityValue, reverse=True)
 
         # Find child node with maximum value
@@ -72,16 +63,14 @@ class Agent:
                 self.minimise(childNode, depth+1, alpha, beta).minimaxValue
 
             if not maxNode or childValue > maxValue or \
-                (childValue == maxValue and random.choice([True, False])):
+                (childValue == maxValue and random.choice([True, False, False])):
                 maxValue = childValue
                 maxNode = childNode
 
             alpha = max(alpha, maxValue)
 
             # Alpha-beta pruning
-            if maxValue >= beta:
-                self.betaPrune += 1
-                break
+            if maxValue >= beta: break
 
         node.setMinimaxValue(maxValue)
         node.setBestAction(maxNode.parentAction)
@@ -89,8 +78,6 @@ class Agent:
         return node
 
     def minimise(self, node, depth, alpha, beta):
-        self.nodes += 1
-
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.utilityValue)
@@ -98,7 +85,7 @@ class Agent:
 
         if not node.isExpanded:
             node.expand()
-            # Pre-sort moves
+            # Pre-sort moves (ascending order)
             node.children.sort(key=lambda x: x.utilityValue)
         
         # Find child node with minimum value
@@ -117,16 +104,14 @@ class Agent:
                 self.maximise(childNode, depth+1, alpha, beta).minimaxValue
     
             if not minNode or childValue > minValue or \
-                (childValue == minValue and random.choice([True, False])):
+                (childValue == minValue and random.choice([True, False, False])):
                 minValue = childValue
                 minNode = childNode
 
             beta = min(beta, minValue)
 
             # Alpha-beta pruning
-            if minValue <= alpha:
-                self.alphaPrune += 1
-                break
+            if minValue <= alpha: break
 
         node.setMinimaxValue(minValue)
         node.setBestAction(minNode.parentAction)
