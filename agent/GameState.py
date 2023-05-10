@@ -26,22 +26,6 @@ class GameState:
             self.empties = set([HexPos(r,q) 
                                 for r in range(7)
                                 for q in range(7)])
-            
-################################################################################
-    def hold(self):
-        self.ogTurnNum = self.turnNum
-        self.ogPower = self.totalPower
-        self.ogReds = dict(self.reds)
-        self.ogBlues = dict(self.blues)
-        self.ogEmpties = set(self.empties)
-    
-    def revert(self):
-        self.turnNum = self.ogTurnNum
-        self.totalPower = self.ogPower
-        self.reds = dict(self.ogReds)
-        self.blues = dict(self.ogBlues)
-        self.empties = set(self.ogEmpties)
-################################################################################
 
     def isGameOver(self):
         return self.turnNum > 2 and (len(self.reds) == 0 or len(self.blues) == 0
@@ -59,13 +43,13 @@ class GameState:
         actions = []
         color = PlayerColor.RED if self.turnNum%2 == 1 else PlayerColor.BLUE
 
-        for cell in self.getCells(color).keys():
-            for dir in HexDir:
-                actions.append(SpreadAction(cell, dir))
-
         if self.totalPower < 49:
             for cell in self.empties:
                 actions.append(SpawnAction(cell))
+
+        for cell in self.getCells(color).keys():
+            for dir in HexDir:
+                actions.append(SpreadAction(cell, dir))        
 
         return actions
 
@@ -88,9 +72,8 @@ class GameState:
 
         if numEnemies == 0: return float('inf')
         if numAllies == 0: return -float('inf')
-        # if numEnemies == 0: numEnemies = 0.1
 
-        return (numAllies + powerAllies)/(numEnemies + powerEnemies)
+        return 6*(powerAllies/powerEnemies) + (numAllies/numEnemies)
 
     def spawn(self, color: PlayerColor, cell: HexPos):
 
