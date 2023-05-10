@@ -1,3 +1,4 @@
+
 from referee.game import PlayerColor, Action
 from .GameState import *
 
@@ -8,11 +9,11 @@ class MinimaxNode:
         self.gameState = gameState
         self.color = color
         self.parentAction = parentAction
-        
+
         self._untriedActions = self.gameState.getLegalActions()
         self.children = []
         self.isExpanded = False
-        
+
         self.utilityValue = gameState.evaluate(color)
         self.minimaxValue = -float('inf')
         self.bestAction = None
@@ -26,7 +27,7 @@ class MinimaxNode:
             childNode = MinimaxNode(childState, self.color, parentAction=action)
             self.children.append(childNode)
 
-        self.is_expanded = True
+        self.isExpanded = True
 
     def isTerminalNode(self):
         return self.gameState.isGameOver()

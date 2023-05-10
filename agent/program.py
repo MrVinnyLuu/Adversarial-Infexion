@@ -1,7 +1,6 @@
 # Loose adaptation of pseudocode from https://en.wikipedia.org/wiki/Minimax and
 # https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
-import random
 from referee.game import PlayerColor, Action, SpawnAction, SpreadAction
 from .GameState import *
 from .minimax import *
@@ -34,11 +33,10 @@ class Agent:
         rootNode = MinimaxNode(gameState = GameState(state=self._gameState),
                                color = self._color)
         self.maximise(rootNode)
-        # for x in rootNode.children:
-        #     print(x.parentAction, round(x.utilityValue,1), round(x.minimaxValue,2))
-        return rootNode.bestAction        
-
+        return rootNode.bestAction
+    
     def maximise(self, node, depth=1, alpha=-float('inf'), beta=float('inf')):
+
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.utilityValue)
@@ -64,15 +62,14 @@ class Agent:
             childValue = \
                 self.minimise(childNode, depth+1, alpha, beta).minimaxValue
 
-            if not maxNode or childValue > maxValue or \
-                (childValue == maxValue and random.choice([True, False, False])):
+            if not maxNode or childValue > maxValue:
                 maxValue = childValue
                 maxNode = childNode
 
             alpha = max(alpha, maxValue)
 
             # Alpha-beta pruning
-            if maxValue >= beta and beta != float('inf'): break
+            if maxValue >= beta: break
 
         node.setMinimaxValue(maxValue)
         node.setBestAction(maxNode.parentAction)
@@ -80,6 +77,7 @@ class Agent:
         return node
 
     def minimise(self, node, depth, alpha, beta):
+
         # Reached terminal node
         if node.isTerminalNode() or depth >= self._maxDepth:
             node.setMinimaxValue(node.utilityValue)
@@ -105,15 +103,14 @@ class Agent:
             childValue = \
                 self.maximise(childNode, depth+1, alpha, beta).minimaxValue
     
-            if not minNode or childValue > minValue or \
-                (childValue == minValue and random.choice([True, False, False])):
+            if not minNode or childValue < minValue:
                 minValue = childValue
                 minNode = childNode
 
             beta = min(beta, minValue)
 
             # Alpha-beta pruning
-            if minValue <= alpha and alpha != -float('inf'): break
+            if minValue <= alpha: break
 
         node.setMinimaxValue(minValue)
         node.setBestAction(minNode.parentAction)
