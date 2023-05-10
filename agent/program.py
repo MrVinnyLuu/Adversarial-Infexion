@@ -34,6 +34,8 @@ class Agent:
         rootNode = MinimaxNode(gameState = GameState(state=self._gameState),
                                color = self._color)
         self.maximise(rootNode)
+        # for x in rootNode.children:
+        #     print(x.parentAction, round(x.utilityValue,1), round(x.minimaxValue,2))
         return rootNode.bestAction        
 
     def maximise(self, node, depth=1, alpha=-float('inf'), beta=float('inf')):
@@ -70,7 +72,7 @@ class Agent:
             alpha = max(alpha, maxValue)
 
             # Alpha-beta pruning
-            if maxValue >= beta: break
+            if maxValue >= beta and beta != float('inf'): break
 
         node.setMinimaxValue(maxValue)
         node.setBestAction(maxNode.parentAction)
@@ -111,7 +113,7 @@ class Agent:
             beta = min(beta, minValue)
 
             # Alpha-beta pruning
-            if minValue <= alpha: break
+            if minValue <= alpha and alpha != -float('inf'): break
 
         node.setMinimaxValue(minValue)
         node.setBestAction(minNode.parentAction)

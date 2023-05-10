@@ -42,16 +42,16 @@ class Agent:
     def utilityAction(self) -> Action:
 
         bestAction = None
-        bestUtility = float('inf')
+        bestUtility = -float('inf')
 
         self._gameState.hold()
 
         for action in self._gameState.getLegalActions():
 
             self._gameState.parseAction(action)
-            utility = self._gameState.utility()
+            utility = self._gameState.evaluate(self._color)
 
-            if utility < bestUtility or \
+            if utility > bestUtility or \
                 (utility == bestUtility and random.choice([True, False])): 
                 bestUtility = utility
                 bestAction = action

@@ -3,7 +3,7 @@ from .GameState import *
 
 class MinimaxNode:
     def __init__(self, gameState: GameState, color: PlayerColor,
-                 utilityValue:float=0, parentAction:Action=None) -> None:
+                 parentAction:Action=None) -> None:
         
         self.gameState = gameState
         self.color = color
@@ -13,7 +13,7 @@ class MinimaxNode:
         self.children = []
         self.isExpanded = False
         
-        self.utilityValue = utilityValue
+        self.utilityValue = gameState.evaluate(color)
         self.minimaxValue = -float('inf')
         self.bestAction = None
 
@@ -23,9 +23,7 @@ class MinimaxNode:
         for action in self._untriedActions:
             childState = GameState(state=self.gameState)
             childState.parseAction(action)
-            childNode = MinimaxNode(childState, self.color,
-                                    utilityValue=childState.evaluate(self.color),
-                                    parentAction=action)
+            childNode = MinimaxNode(childState, self.color, parentAction=action)
             self.children.append(childNode)
 
         self.is_expanded = True
