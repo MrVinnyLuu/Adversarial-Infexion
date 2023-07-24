@@ -10,9 +10,9 @@ Contributors: Natasha Chiorsac, Vincent Luu
 
 - Download the repository
 - Run `python -m referee x y`, where `x` and `y` are game playing agents.
+  - For example: `python -m referee agent agent`
 - Game playing agent choices:
   - `agent`: Minimax agent with improvements described in report
   - `Experimentation/Agent_Greedy`: A greedy agent based on a utility function
   - `Experimentation/Agent_MCTS`: Agent trained with Monte Carlo Tree Search
   - `Experimentation/Agent_Random`: A random agent
-
