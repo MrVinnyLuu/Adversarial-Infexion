@@ -138,3 +138,65 @@ class GameState:
                 self.empties.remove(pos)
                 spreadingCells[pos] = 1
                 self.totalPower += 1
+
+################################################################################
+    def hold(self):
+        self.ogTurnNum = self.turnNum
+        self.ogPower = self.totalPower
+        self.ogReds = dict(self.reds)
+        self.ogBlues = dict(self.blues)
+        self.ogEmpties = set(self.empties)
+    
+    def revert(self):
+        self.turnNum = self.ogTurnNum
+        self.totalPower = self.ogPower
+        self.reds = dict(self.ogReds)
+        self.blues = dict(self.ogBlues)
+        self.empties = set(self.ogEmpties)
+
+    def utilityAction(self) -> Action:
+
+        bestAction = None
+        bestUtility = -1
+
+        self.hold()
+
+        for action in self.getLegalActions():
+            self.parseAction(action)
+            utility = self.utility()
+            if utility < bestUtility or bestUtility == -1:
+                bestUtility = utility
+                bestAction = action
+            self.revert()
+
+        return bestAction
+    
+# Lower is better (used in MCTS)
+    def utility(self, color=None) -> int:
+
+        if not color:
+            color = PlayerColor.RED if (self.turnNum-1)%2 == 1 else PlayerColor.BLUE
+
+        powerAllies = sum(self.getCells(color).values())
+        powerEnemies = self.totalPower - powerAllies
+        numAllies = len(self.getCells(color))
+        numEnemies = 49 - len(self.empties) - numAllies
+        
+        if numAllies == 0: return float('inf')
+
+        return (numEnemies + powerEnemies)/(numAllies + powerAllies)
+
+    def gameResult(self, color):
+
+        if len(self.reds) == 0 and len(self.blues) == 0:
+            return 0
+        elif self.turnNum > 343 and \
+            abs(sum(self.reds.values())-sum(self.blues.values())) < 2:
+            return 0
+                
+        winner = PlayerColor.RED if len(self.reds) > len(self.blues) else PlayerColor.BLUE
+
+        # curPlayer = PlayerColor.RED if (self.turnNum)%2 == 1 else PlayerColor.BLUE
+
+        return 1 if color == winner else -1
+################################################################################

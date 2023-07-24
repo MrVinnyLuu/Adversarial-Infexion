@@ -1,7 +1,7 @@
 # COMP30024 Artificial Intelligence, Semester 1 2023
 # Project Part B: Game Playing Agent
 
-from Agent_MCTS.MCTS import *
+from Experimentation.Agent_MCTS.MCTS import *
 from agent.GameState import *
 from referee.game import \
     PlayerColor, Action, SpawnAction, SpreadAction, HexPos, HexDir
